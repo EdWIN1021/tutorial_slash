@@ -49,6 +49,5 @@ void AItem::OnSphereEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor 
 void AItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
