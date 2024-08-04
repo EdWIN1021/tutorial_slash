@@ -5,15 +5,17 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Item/Item.h"
+#include "Item/Weapon/Weapon.h"
 
 
 // Sets default values
 ASlashCharacter::ASlashCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	bUseControllerRotationPitch  = false;
+	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
@@ -32,14 +34,12 @@ ASlashCharacter::ASlashCharacter()
 void ASlashCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void ASlashCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -52,21 +52,22 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis(FName("LookUp"), this, &ASlashCharacter::LookUp);
 
 	PlayerInputComponent->BindAction(FName("Jump"), IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction(FName("Equip"), IE_Pressed, this, &ASlashCharacter::EKeyPressed);
 }
 
 void ASlashCharacter::MoveForward(float Value)
 {
 	if (Controller && Value != 0.f)
-	{   
+	{
 		// Get the rotation of the controller
 		const FRotator ControlRotation = GetControlRotation();
-        
+
 		// Create a rotator with only the yaw component (ignores pitch and roll)
 		const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
-        
+
 		// Get the forward direction vector from the yaw rotation
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-        
+
 		// Apply the movement input in the forward direction
 		AddMovementInput(Direction, Value);
 	}
@@ -75,7 +76,7 @@ void ASlashCharacter::MoveForward(float Value)
 void ASlashCharacter::MoveRight(float Value)
 {
 	if (Controller && Value != 0.f)
-	{   
+	{
 		const FRotator ControlRotation = GetControlRotation();
 		const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
@@ -93,4 +94,14 @@ void ASlashCharacter::LookUp(float Value)
 	AddControllerPitchInput(Value);
 }
 
+void ASlashCharacter::EKeyPressed()
+{
+	AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
+	if (OverlappingWeapon)
+	{
+		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
 
+		// for animation blueprint
+		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+	}
+}

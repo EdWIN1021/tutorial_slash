@@ -17,15 +17,10 @@ void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
                               const FHitResult& SweepResult)
 {
 	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+}
 
-	UE_LOG(LogTemp, Warning, TEXT("SlashCharacter is not valid1"));
-	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
-	
-	UE_LOG(LogTemp, Warning, TEXT("SlashCharacter is not valid2"));
-	if (SlashCharacter)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("SlashCharacter is valid3"));
-		FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-		ItemMesh->AttachToComponent(SlashCharacter->GetMesh(), TransformRules, FName("RightHandSocket"));
-	}
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+{
+	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
 }

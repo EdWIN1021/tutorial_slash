@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "SlashCharacter.h"
+#include "CharacterTypes.h"
 #include "SlashAnimInstance.generated.h"
 
 /**
@@ -13,10 +15,11 @@ UCLASS()
 class TUTORIAL_SLASH_API USlashAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
+
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
-	
+
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	class ASlashCharacter* SlashCharacter;
 
@@ -27,5 +30,8 @@ public:
 	float GroundSpeed;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-    	bool IsFalling;
+	bool IsFalling;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement | Character State")
+	ECharacterState CharacterState;
 };

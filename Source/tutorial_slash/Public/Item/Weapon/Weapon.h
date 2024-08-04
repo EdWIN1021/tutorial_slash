@@ -17,4 +17,7 @@ class TUTORIAL_SLASH_API AWeapon : public AItem
 protected:
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 	virtual void OnSphereOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) override;
+
+public:
+	void Equip(USceneComponent* InParent, FName InSocketName);
 };
