@@ -20,7 +20,7 @@ public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	UPROPERTY(BlueprintReadOnly)
 	class ASlashCharacter* SlashCharacter;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
