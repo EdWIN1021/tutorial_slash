@@ -8,6 +8,7 @@
 #include "Item/Item.h"
 #include "Item/Weapon/Weapon.h"
 #include "Animation/AnimMontage.h"
+#include "Components/SphereComponent.h"
 
 
 // Sets default values
@@ -59,7 +60,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ASlashCharacter::MoveForward(float Value)
 {
-	if (ActionState == EActionState::EAS_Attacking)
+	if (ActionState != EActionState::EAS_Unoccupied)
 	{
 		return;
 	}
@@ -82,7 +83,7 @@ void ASlashCharacter::MoveForward(float Value)
 
 void ASlashCharacter::MoveRight(float Value)
 {
-	if (ActionState == EActionState::EAS_Attacking)
+	if (ActionState != EActionState::EAS_Unoccupied)
 	{
 		return;
 	}
@@ -115,7 +116,57 @@ void ASlashCharacter::EKeyPressed()
 
 		// for animation blueprint
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+		EquippedWeapon = OverlappingWeapon;
+		EquippedWeapon->Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	else
+	{
+		if (CanDisarm())
+		{
+			PlayEquipMontage(FName("Unequip"));
+			CharacterState = ECharacterState::ECS_Unequipped;
+			ActionState = EActionState::EAS_EquippingWeapon;
+		}
+		else if (CanArm())
+		{
+			PlayEquipMontage(FName("Equip"));
+			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+			ActionState = EActionState::EAS_EquippingWeapon;
+		}
+	}
+}
+
+bool ASlashCharacter::CanDisarm()
+{
+	return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped &&
+		EquipMontage;
+}
+
+bool ASlashCharacter::CanArm()
+{
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState == ECharacterState::ECS_Unequipped && EquippedWeapon;
+}
+
+void ASlashCharacter::Disarm()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->AttackMeshToSocket(GetMesh(), FName("SpineSocket"));
+	}
+}
+
+void ASlashCharacter::Arm()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->AttackMeshToSocket(GetMesh(), FName("RightHandSocket"));
+	}
+}
+
+void ASlashCharacter::FinishEquipping()
+{
+	ActionState = EActionState::EAS_Unoccupied;
 }
 
 void ASlashCharacter::Attack()
@@ -129,9 +180,9 @@ void ASlashCharacter::Attack()
 
 bool ASlashCharacter::CanAttack()
 {
-	return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState != ECharacterState::ECS_Unequipped;
 }
-
 
 void ASlashCharacter::PlayAttackMontage()
 {
@@ -155,6 +206,17 @@ void ASlashCharacter::PlayAttackMontage()
 			break;
 		}
 		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+	}
+}
+
+void ASlashCharacter::PlayEquipMontage(FName SectionName)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && EquipMontage)
+	{
+		AnimInstance->Montage_Play(EquipMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
 	}
 }
 

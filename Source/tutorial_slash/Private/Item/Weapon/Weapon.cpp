@@ -19,9 +19,14 @@ void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }
 
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+void AWeapon::AttackMeshToSocket(USceneComponent* InParent, FName InSocketName)
 {
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
+}
+
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+{
+	AttackMeshToSocket(InParent, InSocketName);
 	ItemState = EItemState::EIS_Equipped;
 }

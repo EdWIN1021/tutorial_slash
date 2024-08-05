@@ -11,6 +11,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMontage;
+class AWeapon;
 
 UCLASS()
 class TUTORIAL_SLASH_API ASlashCharacter : public ACharacter
@@ -37,6 +38,20 @@ protected:
 	void AttackEnd();
 	bool CanAttack();
 
+	void PlayEquipMontage(FName SectionName);
+	bool CanDisarm();
+	bool CanArm();
+
+
+	UFUNCTION(BlueprintCallable)
+	void Disarm();
+
+	UFUNCTION(BlueprintCallable)
+	void Arm();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
+
 private:
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
@@ -54,6 +69,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* EquipMontage;
+
+	UPROPERTY(VisibleAnywhere, Category= "Weapon")
+	AWeapon* EquippedWeapon;
 
 public:
 	// Making its code directly inserted at each point the function is called
