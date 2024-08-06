@@ -113,11 +113,9 @@ void ASlashCharacter::EKeyPressed()
 	if (OverlappingWeapon)
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
-
-		// for animation blueprint
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+		OverlappingItem = nullptr;
 		EquippedWeapon = OverlappingWeapon;
-		EquippedWeapon->Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	else
 	{

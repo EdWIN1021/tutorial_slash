@@ -2,8 +2,8 @@
 
 
 #include "Item/Weapon/Weapon.h"
-
-#include "Characters/SlashCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/SphereComponent.h"
 
 
 void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -29,4 +29,13 @@ void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 {
 	AttackMeshToSocket(InParent, InSocketName);
 	ItemState = EItemState::EIS_Equipped;
+	if (EquipSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());
+	}
+
+	if (Sphere)
+	{
+		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }

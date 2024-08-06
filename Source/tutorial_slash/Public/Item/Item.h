@@ -22,8 +22,6 @@ class TUTORIAL_SLASH_API AItem : public AActor
 public:
 	AItem();
 	virtual void Tick(float DeltaTime) override;
-	UPROPERTY(VisibleAnywhere)
-	USphereComponent* Sphere;
 
 protected:
 	virtual void BeginPlay() override;
@@ -39,4 +37,7 @@ protected:
 	UStaticMeshComponent* ItemMesh;
 
 	EItemState ItemState = EItemState::EIS_Hovering;
+
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* Sphere;
 };

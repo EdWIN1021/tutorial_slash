@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Item/Item.h"
 #include "Weapon.generated.h"
+class USoundBase;
 
 /**
  * 
@@ -24,4 +25,8 @@ protected:
 public:
 	void Equip(USceneComponent* InParent, FName InSocketName);
 	void AttackMeshToSocket(USceneComponent* InParent, FName InSocketName);
+
+private:
+	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	USoundBase* EquipSound;
 };
