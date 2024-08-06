@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "Item/Item.h"
 #include "Weapon.generated.h"
+
 class USoundBase;
+class UBoxComponent;
 
 /**
  * 
@@ -15,18 +17,35 @@ class TUTORIAL_SLASH_API AWeapon : public AItem
 {
 	GENERATED_BODY()
 
+public:
+	AWeapon();
+	void Equip(USceneComponent* InParent, FName InSocketName);
+	void AttackMeshToSocket(USceneComponent* InParent, FName InSocketName);
+
 protected:
-	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+	virtual void BeginPlay() override;
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	                             const FHitResult& SweepResult) override;
+	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
-public:
-	void Equip(USceneComponent* InParent, FName InSocketName);
-	void AttackMeshToSocket(USceneComponent* InParent, FName InSocketName);
+
+	UFUNCTION()
+	void OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                  const FHitResult& SweepResult);
 
 private:
 	UPROPERTY(EditAnywhere, Category="Weapon Properties")
 	USoundBase* EquipSound;
+
+	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
+	UBoxComponent* WeaponBox;
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* BoxTraceStart;
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* BoxTraceEnd;
 };
